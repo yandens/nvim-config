@@ -19,15 +19,10 @@ packer.startup(function(use)
   use 'hrsh7th/cmp-nvim-lsp' -- nvim-cmp source for neovim's built-in LSP
   use 'hrsh7th/nvim-cmp' -- completion
   use 'neovim/nvim-lspconfig' -- LSP
-  -- use {
-  --  'neoclide/coc.nvim',
-  --  branch = 'release'
-  -- }
   use 'jose-elias-alvarez/null-ls.nvim' -- Use Neovim as a language server to inject LSP diagnostics, code actions, and more via Lua
   use 'MunifTanjim/prettier.nvim' -- Prettier plugin for Neovim's built-in LSP client
   use 'williamboman/mason.nvim'
   use 'williamboman/mason-lspconfig.nvim'
-  -- use 'glepnir/lspsaga.nvim' -- LSP UIs
   use 'L3MON4D3/LuaSnip' -- snippet
   use {
     'nvim-treesitter/nvim-treesitter',
@@ -38,6 +33,11 @@ packer.startup(function(use)
   use 'nvim-telescope/telescope-file-browser.nvim'
   use 'windwp/nvim-autopairs'
   use 'windwp/nvim-ts-autotag'
+  use { 'numToStr/Comment.nvim',
+    requires = {
+      'JoosepAlviste/nvim-ts-context-commentstring'
+    }
+  }
   use 'norcalli/nvim-colorizer.lua'
   use 'akinsho/nvim-bufferline.lua'
   use 'lewis6991/gitsigns.nvim'

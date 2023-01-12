@@ -7,14 +7,10 @@ prettier.setup {
     "css",
     "javascript",
     "javascriptreact",
-    "typescript",
-    "typescriptreact",
     "json",
-    "scss",
-    "less",
     "python",
     "java",
-    "php",
-    "c"
+    "c",
+    "go"
   }
 }

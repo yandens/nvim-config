@@ -1,7 +1,20 @@
 --vim.lsp.set_log_level("debug")
 
 local status, nvim_lsp = pcall(require, "lspconfig")
+local util = require "lspconfig/util"
 if (not status) then return end
+
+local augroup_format = vim.api.nvim_create_augroup("Format", { clear = true })
+local enable_format_on_save = function(_, bufnr)
+  vim.api.nvim_clear_autocmds({ group = augroup_format, buffer = bufnr })
+  vim.api.nvim_create_autocmd("BufWritePre", {
+    group = augroup_format,
+    buffer = bufnr,
+    callback = function()
+      vim.lsp.buf.format({ bufnr = bufnr })
+    end,
+  })
+end
 
 local protocol = require('vim.lsp.protocol')
 
@@ -54,9 +67,7 @@ protocol.CompletionItemKind = {
 }
 
 -- Set up completion using nvim_cmp with LSP source
-local capabilities = require('cmp_nvim_lsp').update_capabilities(
-  vim.lsp.protocol.make_client_capabilities()
-)
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 nvim_lsp.clangd.setup {
   on_attach = on_attach,
@@ -73,17 +84,23 @@ nvim_lsp.tsserver.setup {
   capabilities = capabilities
 }
 
+nvim_lsp.gopls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  cmd = { "gopls", "serve" },
+  filetypes = { "go", "gomod" },
+  root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+  settings = {
+    gopls = {
+      analyses = {
+        unusedparams = true,
+      },
+      staticcheck = true,
+    },
+  },
+}
+
 nvim_lsp.tailwindcss.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-nvim_lsp.intelephense.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
-nvim_lsp.emmet_ls.setup {
   on_attach = on_attach,
   capabilities = capabilities
 }
@@ -93,13 +110,12 @@ nvim_lsp.html.setup {
   capabilities = capabilities
 }
 
-nvim_lsp.cssls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities
-}
-
 nvim_lsp.sumneko_lua.setup {
-  on_attach = on_attach,
+  capabilities = capabilities,
+  on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+    enable_format_on_save(client, bufnr)
+  end,
   settings = {
     Lua = {
       diagnostics = {

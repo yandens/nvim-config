@@ -6,7 +6,5 @@ if (not status2) then return end
 mason.setup {}
 
 lspconfig.setup {
-  ensure_installed = { "sumneko_lua", "tailwindcss" },
+  automatic_installation = true
 }
-
-require 'lspconfig'.tailwindcss.setup {}
